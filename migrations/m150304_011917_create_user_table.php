@@ -1,0 +1,37 @@
+<?php
+
+use yii\db\Schema;
+use yii\db\Migration;
+
+class m150304_011917_create_user_table extends Migration
+{
+    public function up()
+    {
+        $tableOptions = null;
+        if ($this->db->driverName === 'mysql') {
+            // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
+            $tableOptions = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ENGINE=InnoDB ROW_FORMAT=DYNAMIC';
+        }
+        $this->createTable('{{%user}}', [
+            'id' => Schema::TYPE_PK,
+            'username' => Schema::TYPE_STRING . ' NOT NULL',
+            'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL',
+            'password_hash' => Schema::TYPE_STRING . ' NOT NULL',
+            'password_reset_token' => Schema::TYPE_STRING,
+            'access_token' => Schema::TYPE_STRING,
+            'email' => Schema::TYPE_STRING . ' NOT NULL',
+            'status' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 10',
+            'created_at' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_at' => Schema::TYPE_INTEGER . ' NOT NULL',
+        ], $tableOptions);
+
+        $this->createIndex('access_token_index', '{{%user}}', 'access_token', true);
+    }
+
+    public function down()
+    {
+        echo "m150304_011917_create_user_table cannot be reverted.\n";
+
+        return false;
+    }
+}
